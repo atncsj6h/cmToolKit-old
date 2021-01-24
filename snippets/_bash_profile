@@ -1,0 +1,134 @@
+# add at end of PATH
+append_path()
+{
+    if ! eval test -z "\"\${$1##*:$2:*}\"" -o -z "\"\${$1%%*:$2}\"" -o -z "\"\${$1##$2:*}\"" -o -z "\"\${$1##$2}\"" ; then
+        eval "$1=\$$1:$2"
+    fi
+}
+
+# add in front of PATH
+prepen_path()
+{
+    if ! eval test -z "\"\${$1##*:$2:*}\"" -o -z "\"\${$1%%*:$2}\"" -o -z "\"\${$1##$2:*}\"" -o -z "\"\${$1##$2}\"" ; then
+        eval "$1=$2:\$$1"
+    fi
+}
+
+# remove path
+remove_path()
+{
+    #   front/middle
+    if  eval test -z "\"\${$1##$2:*}\"" -o -z "\"\${$1##*:$2:*}\"" ; then
+        eval "$1=${!1/$2:/}"
+        return
+    fi
+
+    #   tail
+    if  eval test -z "\"\${$1%%*:$2}\"" ; then
+        eval "$1=${!1/:$2/}"
+        return
+    fi
+
+    #   only
+    if  eval test -z "\"\${$1##$2}\"" ; then
+        eval "$1=${!1/$2/}"
+        return
+    fi
+}
+
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#   cleanup
+remove_path PATH "/opt/X11/bin"
+
+remove_path PATH "${HOME}/bin"
+remove_path PATH "${HOME}/sbin"
+remove_path PATH "${HOME}/ooRexx/bin"
+remove_path PATH "${HOME}/ooRexx/5.0.0/bin"
+
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# shells
+if  test -d "/usr/shells/bin" ; then
+  prepen_path PATH "/usr/shells/bin"
+fi
+
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Python 3.9
+if  test -d "/Library/Frameworks/Python.framework/Versions/3.9/bin" ; then
+  prepen_path PATH "/Library/Frameworks/Python.framework/Versions/3.9/bin"
+fi
+
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# cmToolKit
+if  test -d "${HOME}/cmToolKit" ; then
+  prepen_path PATH "${HOME}/cmToolKit/bin"
+  export cmtk="${HOME}/cmToolKit"
+  export CMTK="${HOME}/cmToolKit"
+  export mods="${HOME}/cmToolKit/cmake/Modules"
+fi
+
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+if  test -d "${HOME}/bin" ; then
+  prepen_path PATH "${HOME}/bin"
+  export PATH
+fi
+
+# ooRexx
+if  test -d "${HOME}/ooRexx/5.0.0.src" ; then
+  append_path PATH "${HOME}/ooRexx/5.0.0/bin"
+  export rexx="${HOME}/ooRexx/5.0.0.src"
+  export svnr="${HOME}/ooRexx/svn.src"
+fi
+
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+export CC=clang
+export CXX=clang++
+
+export C_INCLUDE_PATH=/usr/local/include
+export CPLUS_INCLUDE_PATH=/usr/local/include
+export LIBRARY_PATH=/usr/local/lib
+
+#
+export GNUMAKEFLAGS=--no-print-directory
+
+# Darwin SDK
+export SDKROOT=$( xcrun --sdk macosx --show-sdk-path 2>/dev/null )
+
+# pkgconfig store
+if  [ ! -d "${HOME}/.lib/pkgconfig" ] ; then
+    mkdir -p ${HOME}/.lib/pkgconfig
+fi
+export PKG_CONFIG_PATH="${HOME}/.lib/pkgconfig"
+
+PS1='[\u@\h \W]\$'
+
+if  [[ "$(uname -s)" == "Linux" ]] ; then
+  alias  ls="ls --color=auto    -F"
+  alias ls.="ls --color=auto    -F -A"
+  alias  ll="ls --color=auto    -F    -lh"
+  alias ll.="ls --color=auto    -F -A -lh"
+else
+  alias  ls="ls -G  -F"
+  alias ls.="ls -G  -F -A"
+  alias  ll="ls -G  -F    -lh"
+  alias ll.="ls -G  -F -A -lh"
+fi
+
+alias   md5sum='openssl dgst -md5'
+alias   sha1sum='openssl dgst -sha1'
+
+export HISTCONTROL=erasedups
+export LC_CTYPE="C"
+export LC_ALL="C"
+
+umask 0002
+
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+unset append_path
+unset prepen_path
+unset remove_path

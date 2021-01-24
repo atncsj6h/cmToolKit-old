@@ -1,0 +1,139 @@
+#   add at end of PATH
+append_path()
+{
+    path=(${(@)path:#$1} $1)
+}
+
+#   add in front of PATH
+prepen_path()
+{
+    path=($1 ${(@)path:#$1})
+}
+
+#   remove path
+remove_path()
+{
+    path=(${(@)path:#$1})
+}
+
+#   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+
+#   the works
+
+#   cleanup
+remove_path "/opt/X11/bin"
+
+remove_path "${HOME}/bin"
+remove_path "${HOME}/sbin"
+remove_path "${HOME}/ooRexx/bin"
+remove_path "${HOME}/ooRexx/5.0.0/bin"
+
+#   shells directory
+if  test -d "/usr/shells/bin" ; then
+    prepen_path "/usr/shells/bin"
+fi
+
+#   Python 3.9
+if  test -d "/Library/Frameworks/Python.framework/Versions/3.9/bin" ; then
+    prepen_path "/Library/Frameworks/Python.framework/Versions/3.9/bin"
+fi
+
+#   generic
+if  test -d "${HOME}/bin" ; then
+    prepen_path "${HOME}/bin"
+fi
+
+#   cmToolKit
+if  test -d "${HOME}/cmToolKit" ; then
+    prepen_path "${HOME}/cmToolKit/bin"
+    export cmtk="${HOME}/cmToolKit"
+    export CMTK="${HOME}/cmToolKit"
+    export mods="${HOME}/cmToolKit/cmake/Modules"
+fi
+
+#   ooRexx
+if  test -d "${HOME}/ooRexx/5.0.0.src" ; then
+    append_path  "${HOME}/ooRexx/5.0.0/bin"
+    export  rexx="${HOME}/ooRexx/5.0.0.src"
+    export  svnr="${HOME}/ooRexx/svn.src"
+fi
+
+#   ooRexx.extensions
+if  test -d "${HOME}/ooRexx.Extensions" ; then
+    export  math="${HOME}/ooRexx.Extensions/rxMath.src"
+    export  mpfr="${HOME}/ooRexx.Extensions/rxMpfr.src"
+    export  lyre="${HOME}/ooRexx.Extensions/lyRexx.src"
+fi
+
+#   ooRexx.extensions
+if  test -d "${HOME}/Applications/waxeye" ; then
+    export  waxe="${HOME}/Applications/waxeye"
+    export  rakt="${HOME}/Applications/racket"
+fi
+
+#
+export C_INCLUDE_PATH=/usr/local/include
+export CPLUS_INCLUDE_PATH=/usr/local/include
+export LIBRARY_PATH=/usr/local/lib
+
+#   Clang
+if  [[ "$( whence -p clang )" != "" ]] ; then
+    export CC=clang
+    export CXX=clang++
+fi
+
+#   GCC
+if  test -x "/opt/local/bin/gcc-10" ; then
+    alias   _gcc="/opt/local/bin/gcc-10"
+    alias   _g++="/opt/local/bin/g++-10"
+fi
+
+#   Darwin SDK
+if  [[ "$( uname -s )" == "Darwin" ]] ; then
+    export SDKROOT=$( xcrun --sdk macosx --show-sdk-path 2>/dev/null )
+fi
+
+#   pkgconf ( the program )
+if [ -z "$PKG_CONFIG" ] ; then
+    PKG_CONFIG="$( whence -p pkgconf )"
+fi
+if [ ! -z "$PKG_CONFIG" ] ; then
+    export PKG_CONFIG
+    #   echo    "pkgconf version: '$(${PKG_CONFIG} --version | head -n 1)'"
+    export PKG_CONFIG_EXECUTABLE=$PKG_CONFIG
+fi
+
+#   pkgconf ( the directory for non `system` installs )
+if  [ ! -d "${HOME}/.lib/pkgconfig" ] ; then
+    mkdir -p ${HOME}/.lib/pkgconfig
+fi
+export PKG_CONFIG_PATH="${HOME}/.lib/pkgconfig"
+#   echo    "pkg config path: '$PKG_CONFIG_PATH'"
+
+#   gmake
+export GNUMAKEFLAGS=--no-print-directory
+
+export HISTCONTROL=erasedups
+export LC_CTYPE="C"
+export LC_ALL="C"
+
+umask 0002
+
+if  [[ "$(uname -s)" == "Linux" ]] ; then
+    alias    ls="ls --color=auto    -F"
+    alias   ls.="ls --color=auto    -F -A"
+    alias    ll="ls --color=auto    -F    -lh"
+    alias   ll.="ls --color=auto    -F -A -lh"
+else
+    alias    ls="ls -G  -F"
+    alias   ls.="ls -G  -F -A"
+    alias    ll="ls -G  -F    -lh"
+    alias   ll.="ls -G  -F -A -lh"
+fi
+
+#   functions cleanup
+unset append_path
+unset prepen_path
+unset remove_path
+
