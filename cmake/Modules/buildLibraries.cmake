@@ -1,5 +1,5 @@
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-#   Copyright Enrico Sorichetti 2020 - 2021
+#   Copyright (c) 2020-2021 Enrico Sorichetti
 #   Distributed under the Boost Software License, Version 1.0.
 #   (See accompanying file BOOST_LICENSE_1_0.txt or copy at
 #   http://www.boost.org/LICENSE_1_0.txt)
@@ -37,33 +37,27 @@ function( build_shared_library )
   list( SORT args )
   list( REMOVE_DUPLICATES args )
   foreach( argv ${args} )
-    add_library( ${argv}_SHARED SHARED
+    add_library( ${argv} SHARED
       $<TARGET_OBJECTS:${argv}_OBJECT>
     )
-    set_target_properties( ${argv}_SHARED
+    set_target_properties( ${argv}
       PROPERTIES
       POSITION_INDEPENDENT_CODE TRUE
       OUTPUT_NAME ${argv}
     )
     if( HAVE_IPO_SUPPORT )
-      set_property( TARGET ${argv}_SHARED
+      set_property( TARGET ${argv}
         PROPERTY
         INTERPROCEDURAL_OPTIMIZATION TRUE
       )
     endif()
-    install( TARGETS ${argv}_SHARED
+    target_link_libraries( ${argv}
+      ${${argv}_LIBS}
+    )
+    install( TARGETS ${argv}
       LIBRARY
       DESTINATION ${INST_LIB_DIR}
     )
-    if( EXISTS ${CMAKE_SOURCE_DIR}/${argv}.pc.in )
-      configure_file( ${CMAKE_SOURCE_DIR}/${argv}.pc.in
-        ${CMAKE_BINARY_DIR}/${argv}.pc @ONLY
-      )
-      install( FILES ${CMAKE_BINARY_DIR}/${argv}.pc
-        DESTINATION ${INST_LIB_DIR}/pkgconfig
-      )
-    endif()
-
   endforeach()
 endfunction()
 
@@ -80,7 +74,7 @@ function( build_static_library)
     set_target_properties( ${argv}_STATIC
       PROPERTIES
       POSITION_INDEPENDENT_CODE TRUE
-      OUTPUT_NAME ${argv}_STATIC
+      OUTPUT_NAME ${argv}
     )
     if( HAVE_IPO_SUPPORT )
       set_property( TARGET ${argv}_STATIC
@@ -92,14 +86,59 @@ function( build_static_library)
       ARCHIVE
       DESTINATION ${INST_LIB_DIR}
     )
-    if( EXISTS ${CMAKE_SOURCE_DIR}/${argv}_STATIC.pc.in )
-      configure_file( ${CMAKE_SOURCE_DIR}/${argv}_STATIC.pc.in
-        ${CMAKE_BINARY_DIR}/${argv}_STATIC.pc @ONLY
-      )
-      install( FILES ${CMAKE_BINARY_DIR}/${argv}_STATIC.pc
-        DESTINATION ${INST_LIB_DIR}/pkgconfig
-      )
-    endif()
-
   endforeach()
 endfunction()
+
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+function( build_module)
+  set( args "${ARGV}" )
+  list( SORT args )
+  list( REMOVE_DUPLICATES args )
+  foreach( argv ${args} )
+    add_library( ${argv} MODULE
+      $<TARGET_OBJECTS:${argv}_OBJECT>
+    )
+    set_target_properties( ${argv}
+      PROPERTIES
+      PREFIX ""
+    )
+    set_target_properties( ${argv}
+      PROPERTIES
+      POSITION_INDEPENDENT_CODE TRUE
+      OUTPUT_NAME ${argv}
+    )
+    if( HAVE_IPO_SUPPORT )
+      set_property( TARGET ${argv}
+        PROPERTY
+        INTERPROCEDURAL_OPTIMIZATION TRUE
+      )
+    endif()
+    target_link_libraries( ${argv}
+      ${${argv}_LIBS}
+    )
+    install( TARGETS ${argv}
+      LIBRARY
+      DESTINATION ${INST_LIB_DIR}
+    )
+  endforeach()
+endfunction()
+
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+function( build_headers )
+  set( args "${ARGV}" )
+  list( SORT args )
+  list( REMOVE_DUPLICATES args )
+  foreach( argv ${args} )
+    add_library( ${argv}_IFACE INTERFACE )
+    set_property( TARGET ${argv}_IFACE
+      PROPERTY
+      PUBLIC_HEADER ${${argv}_HDRS}
+    )
+    install( TARGETS ${argv}_IFACE
+      PUBLIC_HEADER DESTINATION ${INST_INC_DIR}
+    )
+  endforeach()
+endfunction()
+

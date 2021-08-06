@@ -1,0 +1,108 @@
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#   Copyright (c) 2020-2021 Enrico Sorichetti
+#   Distributed under the Boost Software License, Version 1.0.
+#   (See accompanying file BOOST_LICENSE_1_0.txt or copy at
+#   http://www.boost.org/LICENSE_1_0.txt)
+#
+include_guard( GLOBAL )
+
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+function( build_object )
+  set( args "${ARGV}" )
+  list( SORT args )
+  list( REMOVE_DUPLICATES args )
+  foreach( argv ${args} )
+    add_library( ${argv}_OBJECT  OBJECT
+      ${${argv}_SRCS}
+    )
+    set_target_properties( ${argv}_OBJECT
+      PROPERTIES
+      POSITION_INDEPENDENT_CODE TRUE
+      OUTPUT_NAME ${argv}
+    )
+    if( HAVE_IPO_SUPPORT )
+      set_property( TARGET ${argv}_OBJECT
+        PROPERTY
+        INTERPROCEDURAL_OPTIMIZATION TRUE
+      )
+    endif()
+  endforeach()
+endfunction()
+
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+function( build_shared_library )
+  set( args "${ARGV}" )
+  list( SORT args )
+  list( REMOVE_DUPLICATES args )
+  foreach( argv ${args} )
+    add_library( ${argv}_SHARED SHARED
+      $<TARGET_OBJECTS:${argv}_OBJECT>
+    )
+    set_target_properties( ${argv}_SHARED
+      PROPERTIES
+      POSITION_INDEPENDENT_CODE TRUE
+      OUTPUT_NAME ${argv}
+    )
+    if( HAVE_IPO_SUPPORT )
+      set_property( TARGET ${argv}_SHARED
+        PROPERTY
+        INTERPROCEDURAL_OPTIMIZATION TRUE
+      )
+    endif()
+    target_link_libraries( ${argv}_SHARED
+      ${argv_LIBS}
+    )
+    install( TARGETS ${argv}_SHARED
+      LIBRARY
+      DESTINATION ${INST_LIB_DIR}
+    )
+    if( EXISTS ${CMAKE_SOURCE_DIR}/${argv}.pc.in )
+      configure_file( ${CMAKE_SOURCE_DIR}/${argv}.pc.in
+        ${CMAKE_BINARY_DIR}/${argv}.pc @ONLY
+      )
+      install( FILES ${CMAKE_BINARY_DIR}/${argv}.pc
+        DESTINATION ${INST_LIB_DIR}/pkgconfig
+      )
+    endif()
+
+  endforeach()
+endfunction()
+
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+function( build_static_library)
+  set( args "${ARGV}" )
+  list( SORT args )
+  list( REMOVE_DUPLICATES args )
+  foreach( argv ${args} )
+    add_library( ${argv}_STATIC STATIC
+      $<TARGET_OBJECTS:${argv}_OBJECT>
+    )
+    set_target_properties( ${argv}_STATIC
+      PROPERTIES
+      POSITION_INDEPENDENT_CODE TRUE
+      OUTPUT_NAME ${argv}_STATIC
+    )
+    if( HAVE_IPO_SUPPORT )
+      set_property( TARGET ${argv}_STATIC
+        PROPERTY
+        INTERPROCEDURAL_OPTIMIZATION TRUE
+      )
+    endif()
+    install( TARGETS ${argv}_STATIC
+      ARCHIVE
+      DESTINATION ${INST_LIB_DIR}
+    )
+    if( EXISTS ${CMAKE_SOURCE_DIR}/${argv}_STATIC.pc.in )
+      configure_file( ${CMAKE_SOURCE_DIR}/${argv}_STATIC.pc.in
+        ${CMAKE_BINARY_DIR}/${argv}_STATIC.pc @ONLY
+      )
+      install( FILES ${CMAKE_BINARY_DIR}/${argv}_STATIC.pc
+        DESTINATION ${INST_LIB_DIR}/pkgconfig
+      )
+    endif()
+
+  endforeach()
+endfunction()

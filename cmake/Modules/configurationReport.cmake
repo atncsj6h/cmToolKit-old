@@ -1,5 +1,5 @@
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-#   Copyright Enrico Sorichetti 2020 - 2021
+#   Copyright (c) 2020-2021 Enrico Sorichetti
 #   Distributed under the Boost Software License, Version 1.0.
 #   (See accompanying file BOOST_LICENSE_1_0.txt or copy at
 #   http://www.boost.org/LICENSE_1_0.txt)
@@ -71,12 +71,9 @@ endif()
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #
 message( STATUS "  build type ...................... : ${CMAKE_BUILD_TYPE}" )
-message( STATUS "  word size ....................... : ${TARG_ARCHITECTURE}" )
-if( HOST_BIGENDIAN )
-  message( STATUS "  byte order ...................... : BIG ENDIAN" )
-else()
-  message( STATUS "  byte order ...................... : LITTLE ENDIAN" )
-endif()
+message( STATUS "  word size ....................... : ${HOST_ARCH}" )
+message( STATUS "  byte order ...................... : LITTLE ENDIAN" )
+
 message( STATUS "  install prefix .................. : ${INST_PREFIX}" )
 if( INST_BIN_DIR )
   message( STATUS "    executables ................... : ${INST_BIN_DIR}" )

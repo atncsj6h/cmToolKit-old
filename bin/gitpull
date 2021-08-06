@@ -1,0 +1,32 @@
+#! /usr/bin/env bash
+
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+REPS="`find .  -maxdepth 1 -type d`"
+
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+for rep in ${REPS} ; do
+  if  test -d "${rep}" ; then
+    if  test -d "${rep}/.git" ; then
+      echo  "*****  GIT         repository  '${rep}'"
+      cd "${rep}"
+      git pull > /dev/null
+      cd - > /dev/null
+      continue
+    fi
+    
+    if  test -d "${rep}/.svn" ; then
+      echo  "*****  Subversion  repository  '${rep}'"
+      cd "${rep}"
+      svn update> /dev/null 
+      cd - > /dev/null
+      continue
+    fi
+      # echo  "*****  skipping    directory   '${rep}'"
+  
+  else  
+    echo  "*****  ghost       directory   '${rep}' "  
+  fi
+
+done
+
+exit

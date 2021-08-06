@@ -1,0 +1,104 @@
+#! /bin/sh
+#
+# Return information about the local @PROJECT@ installation
+
+project="@PROJECT@"
+descrption="@DESCRIPTION@"
+version="@VERSION@"
+version_string="@VERSION_STRING@"
+
+prefix=$(realpath $0)
+prefix=${prefix%/*}
+prefix=${prefix%/*}
+
+bindir="@INST_BIN_DIR@"
+incdir="@INST_INC_DIR@"
+libdir="@INST_LIB_DIR@"
+libs="@INST_LIBS@"
+
+usage()
+{
+    echo "Usage: $project-config [OPTION]"
+    echo ""
+    echo "Available values for OPTION include:"
+    echo ""
+    echo "  --version     version information ( short ) "
+    echo "                [$version]"
+    echo "  --VERSION     version information ( long )"
+    echo "                [$version_string]"
+    echo "  --prefix      install prefix"
+    echo "                [$prefix]"
+    echo "  --bindir      binaries"
+    echo "                [$prefix/$bindir]"
+    echo "  --incdir      include directory"
+    echo "                [$prefix/$incdir]"
+    echo "  --libdir      lib directory"
+    echo "                [$prefix/$libdir]"
+    echo "  --libs        libraries"
+    echo "                [$libs]"
+    echo "  --cflags      pre-processor and compiler flags"
+    echo "                [-I$prefix/$incdir]"
+    echo "  --ldflags     loader flags"
+    echo "                [-L$prefix/$libdir $libs]"
+    exit $1
+}
+
+if test $# -eq 0; then
+    usage 1
+fi
+
+while test $# -gt 0; do
+    case "$1" in
+    # this deals with options in the style
+    # --option=value and extracts the value part
+    # [not currently used]
+       -*=*) value=`echo "$1" | sed 's/[-_a-zA-Z0-9]*=//'` ;;
+       *) value= ;;
+    esac
+
+    case "$1" in
+
+        --version)
+          echo "$version"
+          ;;
+
+        --VERSION)
+          echo "$version_string"
+          ;;
+
+        --prefix)
+          echo  "$prefix"
+          ;;
+
+        --bindir)
+          echo  "$prefix/$bindir"
+          ;;
+
+        --incdir | --includedir)
+          echo  "$prefix/$incdir"
+          ;;
+
+        --libdir | --librarydir)
+          echo  "$prefix/$libdir"
+          ;;
+
+        --libs | --libraries)
+          echo  "$libs"
+          ;;
+
+        --cflags)
+          echo  "-I$prefix/$incdir"
+          ;;
+
+        --ldflags)
+          echo  "-L$prefix/$libdir $libs"
+          ;;
+
+        *)
+          usage 1
+          ;;
+    esac
+    shift
+done
+
+exit 0

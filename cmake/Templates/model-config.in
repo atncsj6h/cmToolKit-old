@@ -1,0 +1,89 @@
+#!/bin/sh
+#
+
+# Return information about @package@ directories and libraries
+#
+
+# installation directories
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+
+sbindir=@sbindir@
+bindir=@bindir@
+
+includedir=@includedir@
+
+libdir=@libdir@
+libexecdir=@libexecdir@
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+usage()
+{
+	cat <<EOF
+Print information on '@package@' version, configuration, and use.
+Usage: @package@-config [options]
+Options:
+	--version         # complete @package@ version string
+	--major           # @package@ version major
+	--minor           # @package@ version minor
+	--revision        # @package@ version revision
+	--libversion      # @package@ interface number for libtool
+                          # (not necessarily the dll file name suffix!)
+ 	--libdir          # directory where @package@ libraries are installed
+	--includedir      # directory where @package@ headers are installed
+	--ldflags         # options for linking against @package@
+	--libs            # same as --ldflags
+	--cflags          # options for compiling using @package@
+	--includes        # same as --cflags
+	--all             # print a summary of all @package@  configure options
+EOF
+	exit $1
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+if test $# -eq 0; then
+	usage 1 1>&2
+fi
+
+while test $# -gt 0; do
+  case "$1" in
+    -*=*) optarg=`echo "$1" | sed 's/[-_a-zA-Z0-9]*=//'` ;;
+    *) optarg= ;;
+  esac
+
+  case "$1" in
+    --version)
+	    echo "@package@_@version@"
+	  ;;
+    --major)
+	    echo "@package@_@major@"
+	  ;;
+    --minor)
+	    echo "@package@_@minor@"
+	  ;;
+    --revision)
+	    echo "@package@_@revision@"
+	  ;;
+    --libversion)
+	    echo "@package@_@libversion@"
+	    # LTCURRENT:LTREVISION:LTAGE
+	  ;;
+
+    --cflags)
+	    echo "-I$includedir"
+	  ;;
+    --ldflags)
+      ldflags="-L$libdir"
+      for lib in ${@package@_libs} ; do
+        ldflags="$ldflags -l$lib"
+      done
+      echo "$ldflags"
+    ;;
+  esac
+  shift
+
+done
+
+

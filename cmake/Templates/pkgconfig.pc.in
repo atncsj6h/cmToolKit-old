@@ -1,0 +1,17 @@
+prefix=@INST_PREFIX@
+
+incdir=${prefix}/@INST_INC_DIR@
+
+libdir=${prefix}/@INST_LIB_DIR@
+libs=@INST_LIBS@
+
+Name:           @PROJECT@
+
+Description:    @DESCRIPTION@
+
+Version:        @VERSION@
+Version_string: @VERSION_STRING@
+
+Cflags:         -I${incdir}
+
+Libs:           -L${libdir} ${libs}

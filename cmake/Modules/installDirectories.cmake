@@ -1,5 +1,5 @@
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-#   Copyright Enrico Sorichetti 2020 - 2021
+#   Copyright (c) 2020-2021 Enrico Sorichetti
 #   Distributed under the Boost Software License, Version 1.0.
 #   (See accompanying file BOOST_LICENSE_1_0.txt or copy at
 #   http://www.boost.org/LICENSE_1_0.txt)
@@ -39,6 +39,11 @@ set( INST_PKGCONF "${INST_LIB_DIR}/pkgconfig" )
 set( INST_MOD_DIR "${INST_LIB_DIR}" )
 if( CMAKE_INSTALL_PREFIX IN_LIST WELL_KNOWN_PREFIX_LIST )
   set( INST_MOD_DIR "${INST_LIB_DIR}/${PROJECT_NAME}" )
+endif()
+
+set( INST_LIBEXEC_DIR "libexec" )
+if( CMAKE_INSTALL_PREFIX IN_LIST WELL_KNOWN_PREFIX_LIST )
+  set( INST_LIB_DIR "${CMAKE_INSTALL_LIBEXECDIR}" )
 endif()
 
 set( INST_SHR_DIR "${CMAKE_INSTALL_DATADIR}" )

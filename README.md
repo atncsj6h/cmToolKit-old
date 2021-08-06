@@ -1,59 +1,66 @@
-##  readme
+##  README
+*
+* building blocks for a CMAKE based build system.
 * * *
 
-##  copyright
-* Copyright Enrico Sorichetti 2020 - 2021
-* Distributed under the Boost Software License, Version 1.0.
-* See accompanying file LICENSE\_1\_0.txt or copy at
-* [http://www.boost.org/LICENSE\_1\_0.txt](http://www.boost.org/LICENSE\_1\_0.txt)
+##  COPYRIGHT
+*
+* Copyright (c) 2020-2021 Enrico Sorichetti
+* Distributed under the Boost Software License, Version 1.0
+* See accompanying file `BOOST_LICENSE_1_0.txt` or copy at
+* `[http://www.boost.org/LICENSE_1_0.txt](http://www.boost.org/LICENSE_1_0.txt)`
 * * *
 
-##  content
-* . . .
-* a set of building blocks for the implementation of a CMAKE based build system.
+##  REPOSITORY
+*
+* `https://github.com/atncsj6h/cmToolKit.git`
+* `git@github.com:atncsj6h/cmToolKit.git`
 * * *
 
-##  CMAKE
-* anything better than 3.18
-* . . .
+##  PREREQUISITES
+*
+* cmake at least 3.19
+* `https://cmake.org/download/`
+*
+* pkgconf
+* `https://github.com/pkgconf/pkgconf/releases`
 * * *
 
-##  pkgconf
-* . . .
-* * *
-
-##  ccache
-* . . .
+##  NICE TO HAVE
+*
+* ccache to speed up builds
+* `https://github.com/ccache/ccache/releases`
+*
+* NOTE
 * ccache is not able to identify clang when invoked as gcc
-* . . .
+* ( it usually happens when using CMAKE and the GNU autotools chain )
 * add to the the bash/zsh profile
 * CC=clang
 * CXX=clang++
-* . . .
+*
+* ninja, a make alternative
+* `https://github.com/ninja-build/ninja/releases`
 * * *
 
-##  ninja
-* . . .
+##  HOW TO
+*
+* see the README_HOWTO.txt
 * * *
 
-##  how to use it
-* . . .
-* git clone https://github.com/00003481/cmToolKit [local-repo-name]
-* . . .
-* add to the CMakeLists.txt
-* set( CMAKE_MODULE_PATH `local-repo-name`/cmake/Modules )
-* . . .
-* * *
-
-##  Contribution guidelines
+##  CONTRIBUTION GUIDELINES
+*
 * Comments welcome
 * Suggestions welcome
 * * *
 
 ##  continuous enhancements and testing in progress
-* mac OS(x) High Sierra, Mojave, Catalina
-* x86 64  Fedora 32/33, FreeBSD 12/13,
-* aarm64  Raspbian, Ubuntu, Manjaro(archLinux)
+*
+* x86-64  macOS(x) Catalina, Mojave, High Sierra, El Capitan
+* arm64   macOS(x) Big Sur
+* x86-64  Fedora 32/33, FreeBSD 12/13, NetBSD, OpenBSD
+* aarch64 Raspbian, Ubuntu, Manjaro(archLinux)
+*
+* macOS(x) universal binaries x86-64/arm64, arm64/x86-64
 * * *
 
 ##  NOTES

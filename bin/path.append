@@ -1,0 +1,34 @@
+#   path.here
+#   remove the current path from the PATH and add it to the front
+
+# add at end of PATH
+append_path()
+{
+    path=(${(@)path:#$1} $1)
+}
+
+# add in front of PATH
+prepen_path()
+{
+    path=($1 ${(@)path:#$1})
+}
+
+# remove path
+remove_path()
+{
+    path=(${(@)path:#$1})
+}
+
+#   the works
+here="$(pwd)"
+if ! test -d "${here}" ; then
+    echo    "strange ... path not found '${here}'"
+else
+    remove_path "${here}"
+    append_path "${here}"
+fi
+
+#   cleanup
+unset append_path
+unset prepen_path
+unset remove_path

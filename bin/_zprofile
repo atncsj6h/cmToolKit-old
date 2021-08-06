@@ -1,0 +1,84 @@
+#   add at end of PATH
+append_path()
+{
+    path=(${(@)path:#$1} $1)
+}
+
+#   add in front of PATH
+prepen_path()
+{
+    path=($1 ${(@)path:#$1})
+}
+
+#   remove path
+remove_path()
+{
+    path=(${(@)path:#$1})
+}
+
+#   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+
+#   the works
+
+#   cleanup
+remove_path "/opt/X11/bin"
+
+remove_path "${HOME}/bin"
+remove_path "${HOME}/sbin"
+remove_path "${HOME}/ooRexx/bin"
+remove_path "${HOME}/ooRexx/5.0.0/bin"
+
+
+#   generic
+if  test -d "${HOME}/bin" ; then
+    prepen_path "${HOME}/bin"
+fi
+
+#   cmToolKit
+if  test -d "${HOME}/cmToolKit" ; then
+    prepen_path "${HOME}/cmToolKit/bin"
+    export cmtk="${HOME}/cmToolKit"
+    export CMTK="${HOME}/cmToolKit"
+    export mods="${HOME}/cmToolKit/cmake/Modules"
+fi
+
+#   ooRexx
+if  test -d "${HOME}/ooRexx/5.0.0.src" ; then
+    append_path  "${HOME}/ooRexx/5.0.0/bin"
+    export  rexx="${HOME}/ooRexx/5.0.0.src"
+    export  svnr="${HOME}/ooRexx/svn.src"
+fi
+
+#
+export C_INCLUDE_PATH=/usr/local/include
+export CPLUS_INCLUDE_PATH=/usr/local/include
+export LIBRARY_PATH=/usr/local/lib
+
+#   Clang
+if  [[ "$( whence -p clang )" != "" ]] ; then
+    export CC=clang
+    export CXX=clang++
+fi
+
+#   Darwin SDK
+if  [[ "$( uname -s )" == "Darwin" ]] ; then
+    export SDKROOT=$( xcrun --sdk macosx --show-sdk-path 2>/dev/null )
+fi
+
+export HISTCONTROL=erasedups
+export LC_CTYPE="C"
+export LC_ALL="C"
+
+umask 0002
+
+alias    ls="ls -G  -F"
+alias   ls.="ls -G  -F -A"
+alias    ll="ls -G  -F    -lh"
+alias   ll.="ls -G  -F -A -lh"
+
+#   functions cleanup
+unset append_path
+unset prepen_path
+unset remove_path
+

@@ -1,0 +1,45 @@
+#! /usr/bin/env bash
+#   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+
+#   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+
+#       directories     ==> rwx/r.x/r.x
+#
+find .  -type d -print0  | xargs -0 chmod 755
+
+
+#       files           ==> rw./r../r..
+#
+find .  ! -regex '^.*/.hg/.*$' ! -regex '^.*/.git/.*$' -type f \
+        -print0  | xargs -0 chmod 644
+
+
+#       executables     ==> rwx/r.x/r.x
+#       everything      ==> bin
+#
+find .  ! -regex '^.*/.hg/.*$'  !  -regex '^.*/.git/.*$' \
+        -regex '^.*/bin/.*$' \
+        -type f -print0 | xargs -0 chmod 755
+
+#       executables     ==> rwx/rwx/r.x
+#       anywhere by extension
+
+find .  ! -regex '^.*/.hg/.*$'  ! -regex '^.*/.git/.*$'  \
+        -type f -name "*.sh"    -print0  | xargs -0 chmod 755
+
+find .  ! -regex '^.*/.hg/.*$'  ! -regex '^.*/.git/.*$'  \
+        -type f -name "*.pl"    -print0  | xargs -0 chmod 755
+
+find .  ! -regex '^.*/.hg/.*$'  ! -regex '^.*/.git/.*$'  \
+        -type f -name "*.py"    -print0  | xargs -0 chmod 755
+
+find .  ! -regex '^.*/.hg/.*$'  ! -regex '^.*/.git/.*$'  \
+        -type f -name "*.rb"    -print0  | xargs -0 chmod 755
+
+find .  ! -regex '^.*/.hg/.*$'  ! -regex '^.*/.git/.*$'  \
+        -type f -name "*.rex"   -print0  | xargs -0 chmod 755
+
+find .  ! -regex '^.*/.hg/.*$'  ! -regex '^.*/.git/.*$'  \
+        -type f -name "*.cls"   -print0  | xargs -0 chmod 755
