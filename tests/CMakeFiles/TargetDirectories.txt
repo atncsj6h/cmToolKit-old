@@ -1,2 +1,0 @@
-/Users/enrico/cmToolKit/tests/CMakeFiles/rebuild_cache.dir
-/Users/enrico/cmToolKit/tests/CMakeFiles/edit_cache.dir
