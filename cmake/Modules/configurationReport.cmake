@@ -27,6 +27,8 @@ message( "" )
 message( STATUS "" )
 message( STATUS "configuration summary for project   : ${PROJECT}" )
 message( STATUS "  version ......................... : ${VERSION}" )
+message( STATUS "  version string................... : ${VERSION_STRING}" )
+
 message( STATUS "" )
 if( DEFINED RCS_WC_REVISION )
   message( STATUS "  RCS ............................. : ${RCS_NAME} - ${RCS_VERSION}" )
@@ -43,7 +45,7 @@ endif()
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #
 if( REQUIRES_LIBRARIES )
-  message( STATUS "  requires libraries .............. : ${REQUIRES_LIBRARIES}" )
+  message( STATUS "  requires libraries .............. : ${REQUIRES}" )
   set( _desc      "    found ......................... :" )
   foreach( _item ${REQUIRES_LIBRARIES} )
     message( STATUS "${_desc} ${_item} - ${${_item}_VERSION}" )
@@ -55,7 +57,7 @@ endif()
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #
 if( PROVIDES_LIBRARIES )
-  message( STATUS "  provides libraries .............. : ${PROVIDES_LIBRARIES}" )
+  message( STATUS "  provides libraries .............. : ${PROVIDES}" )
   foreach( _item ${PROVIDES_LIBRARIES} )
   endforeach()
   message( STATUS "" )
@@ -71,8 +73,8 @@ endif()
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #
 message( STATUS "  build type ...................... : ${CMAKE_BUILD_TYPE}" )
-message( STATUS "  word size ....................... : ${HOST_ARCH}" )
-message( STATUS "  byte order ...................... : LITTLE ENDIAN" )
+message( STATUS "  word size ....................... : ${ARCHITECTURE}" )
+message( STATUS "  byte order ...................... : ${ENDIANNESS}" )
 
 message( STATUS "  install prefix .................. : ${INST_PREFIX}" )
 if( INST_BIN_DIR )
@@ -181,11 +183,11 @@ endif()
 
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #
-if( BISON )
-  get_program_version( "${BISON}" )
-  get_filename_component( _name "${BISON}" NAME_WE )
+if( BISON_EXECUTABLE )
+  get_program_version( "${BISON_EXECUTABLE}" )
+  get_filename_component( _name "${BISON_EXECUTABLE}" NAME_WE )
   string( TOUPPER "${_name}" _name )
-  message( STATUS "  bison ........................... : ${BISON} - ${${_name}_VERSION_STRING}" )
+  message( STATUS "  bison ........................... : ${BISON_EXECUTABLE} - ${${_name}_VERSION_STRING}" )
   message( STATUS "" )
 endif()
 
@@ -195,6 +197,10 @@ get_property( _languages GLOBAL PROPERTY ENABLED_LANGUAGES )
 if( _languages )
   message( STATUS "  enabled languages ............... : ${_languages}" )
   message( STATUS "" )
+
+  message( STATUS "  IPO enabled ...............       : ${HAVE_IPO_SUPPORT}" )
+  message( STATUS "" )
+
   foreach( _lang ${_languages} )
     string( SUBSTRING "${_lang}   " 0 4 _text )
     message( STATUS "  ${_text}compiler .................... : ${CMAKE_${_lang}_COMPILER}" )

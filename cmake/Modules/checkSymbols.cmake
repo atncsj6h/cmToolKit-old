@@ -12,13 +12,12 @@ include( CMakePushCheckState )
 include( CheckSymbolExists )
 
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-function( check_symbol )
-  # sym, hdrlist, req
-  set( sym "${ARGV0}" )
-  set( hdr "${ARGV1}" )
+function( check_symbols )
+  # sym, list, req
+  set( sym  "${ARGV0}" )
+  set( list "${ARGV1}" )
 
-  get_filename_component(nam  ${hdr} NAME_WE )
-  set( flag "${nam}_${sym}" )
+  set( flag "${sym}" )
   string( REPLACE "_" " "   flag "${flag}" )
   string( STRIP   "${flag}" flag )
   string( REPLACE " " "_"   flag "${flag}" )
@@ -26,10 +25,10 @@ function( check_symbol )
   string( TOUPPER "${flag}" flag )
 
   cmake_push_check_state( RESET )
-  check_symbol_exists( ${sym} ${hdr} ${flag} )
+  check_symbol_exists( ${sym} ${list} ${flag} )
   if( ( ARGC GREATER 2 ) AND NOT ${flag} )
     message( SEND_ERROR "
- symbol '${sym}' not declared in '${hdr}'" )
+ symbol '${sym}' not declared in '${list}'" )
   endif()
   cmake_pop_check_state()
 

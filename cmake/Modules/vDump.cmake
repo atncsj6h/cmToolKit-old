@@ -34,17 +34,23 @@ get_cmake_property( _vars VARIABLES )
 list( SORT _vars )
 list( REMOVE_DUPLICATES _vars )
 set( heads "ARG" "CMAKE_Fortran" "BISON_version_" )
-set( tails "_CONTENT" "_COMPILER_ID_TOOL_MATCH_REGEX" )
+set( tails "_CONTENT" "_COMPILER_ID_TOOL_MATCH_REGEX"
+  _SRCS _DIRS _LIBS _DIAG )
+set( anywh "_OBJC" )
+
 foreach( _var IN LISTS _vars )
+
   # variables starting with "_" short SCOPED or internal
   if( "${_var}" MATCHES "^_" )
     continue()
   endif()
-  # lower case variables are short SCOPED variables
+
   string( TOLOWER "${_var}" _lc )
   if( "${_var}" STREQUAL "${_lc}" )
     continue()
   endif()
+
+  # heads
   unset( _skip )
   unset( _skip  CACHE )
   foreach( head IN LISTS heads )
@@ -56,6 +62,8 @@ foreach( _var IN LISTS _vars )
   if( _skip )
     continue()
   endif()
+
+  # tails
   unset( _skip )
   unset( _skip  CACHE )
   foreach( tail IN LISTS tails )
@@ -67,6 +75,20 @@ foreach( _var IN LISTS _vars )
   if( _skip )
     continue()
   endif()
+
+  # anywh
+  unset( _skip )
+  unset( _skip  CACHE )
+  foreach( anyw IN LISTS anywh )
+    if( "${_var}" MATCHES "(${anyw})" )
+      set( _skip "1" )
+      break()
+    endif()
+  endforeach()
+  if( _skip )
+    continue()
+  endif()
+
   if( "${_var}" STREQUAL "OUTPUT" )
     continue()
   endif()

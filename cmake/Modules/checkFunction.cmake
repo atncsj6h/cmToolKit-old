@@ -5,9 +5,9 @@
 #   http://www.boost.org/LICENSE_1_0.txt)
 
 include_guard( GLOBAL )
+include( CMakePushCheckState )
 
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-include( CMakePushCheckState )
 include( CheckFunctionExists )
 
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

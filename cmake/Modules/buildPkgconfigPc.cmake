@@ -8,7 +8,7 @@ include_guard( GLOBAL )
 
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #
-function( build_config_pc )
+function( build_pkgconfig_pc )
   set( args "${ARGV}" )
   list( SORT args )
   list( REMOVE_DUPLICATES args )
@@ -17,7 +17,7 @@ function( build_config_pc )
       configure_file( ${CMAKE_SOURCE_DIR}/${argv}.pc.in
         ${CMAKE_BINARY_DIR}/${argv}.pc @ONLY )
     else()
-      configure_file( $ENV{CMTK}/cmake/Templates/config.pc.in
+      configure_file( $ENV{CMTK}/cmake/Templates/pkgconfig.pc.in
         ${CMAKE_BINARY_DIR}/${argv}.pc @ONLY )
     endif()
 
@@ -39,7 +39,7 @@ endfunction()
 
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #
-function( build_config_sh )
+function( build_pkgconfig_sh )
   set( args "${ARGV}" )
   list( SORT args )
   list( REMOVE_DUPLICATES args )
@@ -48,7 +48,7 @@ function( build_config_sh )
       configure_file( ${CMAKE_SOURCE_DIR}/${argv}-config.in
         ${CMAKE_BINARY_DIR}/${argv}-config @ONLY )
     else()
-      configure_file( $ENV{CMTK}/cmake/Templates/config.sh.in
+      configure_file( $ENV{CMTK}/cmake/Templates/pkgconfig.sh.in
          ${CMAKE_BINARY_DIR}/${argv}-config @ONLY )
     endif()
 

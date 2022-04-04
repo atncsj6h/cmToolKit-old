@@ -33,7 +33,9 @@ function( check_header )
     string( TOUPPER "${flag}" flag)
     check_include_file( "${argv}" ${flag} )
     if( required AND NOT ${flag} )
-      message( SEND_ERROR "header '${argv}' not available" )
+      message( SEND_ERROR "
+ unable to locate a required header '${argv}' "
+      )
     endif()
   endforeach()
   cmake_pop_check_state()

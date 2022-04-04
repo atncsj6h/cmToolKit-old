@@ -8,21 +8,39 @@ include_guard( GLOBAL )
 
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #
-function( build_object )
+function( build_headers )
   set( args "${ARGV}" )
   list( SORT args )
   list( REMOVE_DUPLICATES args )
   foreach( argv ${args} )
-    add_library( ${argv}_OBJECT  OBJECT
+    add_library( ${argv}_IFACE INTERFACE )
+    set_property( TARGET ${argv}_IFACE
+      PROPERTY
+      PUBLIC_HEADER ${${argv}_HDRS}
+    )
+    install( TARGETS ${argv}_IFACE
+      PUBLIC_HEADER DESTINATION ${INST_INC_DIR}
+    )
+  endforeach()
+endfunction()
+
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+function( build_objects )
+  set( args "${ARGV}" )
+  list( SORT args )
+  list( REMOVE_DUPLICATES args )
+  foreach( argv ${args} )
+    add_library( ${argv}_OBJECTS  OBJECT
       ${${argv}_SRCS}
     )
-    set_target_properties( ${argv}_OBJECT
+    set_target_properties( ${argv}_OBJECTS
       PROPERTIES
       POSITION_INDEPENDENT_CODE TRUE
       OUTPUT_NAME ${argv}
     )
     if( HAVE_IPO_SUPPORT )
-      set_property( TARGET ${argv}_OBJECT
+      set_property( TARGET ${argv}_OBJECTS
         PROPERTY
         INTERPROCEDURAL_OPTIMIZATION TRUE
       )
@@ -38,7 +56,7 @@ function( build_shared_library )
   list( REMOVE_DUPLICATES args )
   foreach( argv ${args} )
     add_library( ${argv} SHARED
-      $<TARGET_OBJECTS:${argv}_OBJECT>
+      $<TARGET_OBJECTS:${argv}_OBJECTS>
     )
     set_target_properties( ${argv}
       PROPERTIES
@@ -69,7 +87,7 @@ function( build_static_library)
   list( REMOVE_DUPLICATES args )
   foreach( argv ${args} )
     add_library( ${argv}_STATIC STATIC
-      $<TARGET_OBJECTS:${argv}_OBJECT>
+      $<TARGET_OBJECTS:${argv}_OBJECTS>
     )
     set_target_properties( ${argv}_STATIC
       PROPERTIES
@@ -97,7 +115,7 @@ function( build_module)
   list( REMOVE_DUPLICATES args )
   foreach( argv ${args} )
     add_library( ${argv} MODULE
-      $<TARGET_OBJECTS:${argv}_OBJECT>
+      $<TARGET_OBJECTS:${argv}_OBJECTS>
     )
     set_target_properties( ${argv}
       PROPERTIES
@@ -124,21 +142,4 @@ function( build_module)
   endforeach()
 endfunction()
 
-#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-#
-function( build_headers )
-  set( args "${ARGV}" )
-  list( SORT args )
-  list( REMOVE_DUPLICATES args )
-  foreach( argv ${args} )
-    add_library( ${argv}_IFACE INTERFACE )
-    set_property( TARGET ${argv}_IFACE
-      PROPERTY
-      PUBLIC_HEADER ${${argv}_HDRS}
-    )
-    install( TARGETS ${argv}_IFACE
-      PUBLIC_HEADER DESTINATION ${INST_INC_DIR}
-    )
-  endforeach()
-endfunction()
 
